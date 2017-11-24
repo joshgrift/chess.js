@@ -1,0 +1,31 @@
+/*♔ ♕ ♖ ♗ ♘  ♚ ♛ ♜ ♝ ♞ ♟*/
+body {
+  font-family: Arial;
+  background-color: #795548;
+}
+
+.chess {
+  width: 320px;
+  margin: auto;
+  position: relative;
+  margin-top: 20px;
+}
+
+.victory {
+  font-weight: bold;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  margin: 20px;
+  display: none;
+}
+
+.controls {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.controls a {
+  font-weight: bold;
+  color: white;
+}
