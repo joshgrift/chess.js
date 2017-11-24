@@ -78,5 +78,5 @@ function exportChess(){
 }
 
 function share(){
-  prompt('Link is below',window.location.pathname + "#" + sangwa.encode(chess.export()));
+  prompt('Link is below',window.location.origin + window.location.pathname + "#" + sangwa.encode(chess.export()));
 }
