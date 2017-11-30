@@ -29,6 +29,7 @@ var Chess = function(element,c){
 
     this.drawX = deets.x * c.t;
     this.drawY = deets.y * c.t;
+    this.start = deets.start;
 
     this.team = deets.team;
     this.king = deets.king;
@@ -40,12 +41,10 @@ var Chess = function(element,c){
     }
 
     this.move = function(x,y){
-      if(this.canMove(x,y,this.x,this.y)){
-        this.x = x;
-        this.y = y;
-        this.drawX = x * c.t;
-        this.drawY = y * c.t;
-      }
+      this.x = x;
+      this.y = y;
+      this.drawX = x * c.t;
+      this.drawY = y * c.t;
     }
 
     this.drag = function(x,y){
@@ -56,6 +55,18 @@ var Chess = function(element,c){
     this.resetDraw = function(){
       this.drawX = this.x * c.t;
       this.drawY = this.y * c.t;
+    }
+
+    this.hasMoved = function(){
+      var found = true;
+
+      for(var i = 0; i < this.start[this.team].length; i++){
+        if(this.start[this.team][i][0] == this.x && this.start[this.team][i][1] == this.y){
+          found = false;
+        }
+      }
+
+      return found;
     }
   }
 
@@ -71,7 +82,8 @@ var Chess = function(element,c){
           y:c.pieces[i].start[team][num][1],
           team:team,
           king:c.pieces[i].king,
-          canMove:c.pieces[i].canMove
+          canMove:c.pieces[i].canMove,
+          start:c.pieces[i].start
         }));
       }
     }
@@ -131,19 +143,27 @@ var Chess = function(element,c){
   this.takeoff = function(x,y){
     if(this.dragging){
       var currentPiece = this.getPieceAt(Math.floor(x/c.t),Math.floor(y/c.t));
-      if(this.dragging.canMove(Math.floor(x/c.t),Math.floor(y/c.t)) && currentPiece == null){
-        this.dragging.move(Math.floor(x/c.t),Math.floor(y/c.t));
-      } else if(this.dragging.canMove(Math.floor(x/c.t),Math.floor(y/c.t)) && currentPiece != null && currentPiece.team != this.dragging.team){
-        currentPiece.dead = true;
-        if(currentPiece.king){
-          this.victory(this.dragging.team);
+
+      //move character if it can move
+      if(this.dragging.canMove(Math.floor(x/c.t),Math.floor(y/c.t))){
+        if(currentPiece){
+          currentPiece.dead = true;
         }
         this.dragging.move(Math.floor(x/c.t),Math.floor(y/c.t));
       } else {
         this.dragging.resetDraw();
       }
+
+      //check victory condition
+      if(this.checkVictory()){
+        this.victory(this.dragging.team);
+      }
+
+      //now change team
+      //TODO CHANGE TEAM HERE
     }
 
+    //reset dragging value
     this.dragging = false;
   }
 
@@ -178,11 +198,24 @@ var Chess = function(element,c){
               y:d[i].substr(2,1),
               team:d[i].substr(0,1),
               king:this.c.pieces[d[i].substr(3)].king,
-              canMove:this.c.pieces[d[i].substr(3)].canMove
+              canMove:this.c.pieces[d[i].substr(3)].canMove,
+              start:this.c.pieces[d[i].substr(3)].start
             }));
       }
     }
 
+  }
+
+  this.checkVictory = function(){
+    var victory = false;
+
+    for(i in this.pieces){
+      if(this.pieces[i].dead && this.pieces[i].king){
+        victory = true;
+      }
+    }
+
+    return victory;
   }
 
   this.checkForPiece = function(x,y){
@@ -191,5 +224,31 @@ var Chess = function(element,c){
     } else {
       return false;
     }
+  }
+
+  this.isClearPath = function(x1,y1,x2,y2){
+    var clear = true;
+    var x = x1;
+    var y = y1;
+
+    while(x != x2 || y != y2){
+      if(x > x2){
+        x--;
+      } else if (x < x2){
+        x++;
+      }
+
+      if(y > y2){
+        y--;
+      } else if (y < y2){
+        y++;
+      }
+
+      if(this.checkForPiece(x,y) && !(x == x2 && y == y2)){
+        clear = false;
+      }
+    }
+
+    return clear;
   }
 }

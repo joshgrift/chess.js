@@ -1,4 +1,17 @@
 /* configs */
+//landing on a tile kills the person under the tile
+
+/* functions avaliable for scripting canMove functions */
+
+//Piece object
+  //this.hasMoved() - returns whether the unit has moved
+  //this.team - the team of the piece
+
+  //chess.victory(team) - passed team has won
+  //chess.checkForPiece(x,y) - returns true if there is a piece there.
+  //chess.isClearPath(x1,y1,x2,y2) - returns true if the path has no other characters (ignoring the landing tile)
+  //chess.getPieceAt(x,y) - gets the piece at a location
+
 var c = {
   t:40,
   x:8,
@@ -19,7 +32,29 @@ var c = {
         b:[[6,0],[6,1],[6,2],[6,3],[6,4],[6,5],[6,6],[6,7]],
       },
       canMove:function(x1,y1,x2,y2){
-        return true;
+        if(chess.getPieceAt(x2,y2)){
+          if(chess.getPieceAt(x2,y2).team == this.team){
+            return false;
+          }
+        }
+
+        if(this.team == "w"){
+          if((x2-x1==1 && Math.abs(y2-y1)==1 && chess.checkForPiece(x2,y2)) || (x2-x1==1 && y2-y1==0 && !chess.checkForPiece(x2,y2))){
+            return true;
+          } else if(!this.hasMoved() && (x2-x1==2 && Math.abs(y2-y1)==0) && !chess.checkForPiece(x2,y2)){
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if((x2-x1==-1 && Math.abs(y2-y1)==1 && chess.checkForPiece(x2,y2)) || (x2-x1==-1 && y2-y1==0 && !chess.checkForPiece(x2,y2))){
+            return true;
+          } else if(!this.hasMoved() && (Math.abs(x2-x1)==2 && Math.abs(y2-y1)==0) && !chess.checkForPiece(x2,y2)){
+            return true;
+          } else {
+            return false;
+          }
+        }
       }
     },
     king:{
@@ -33,7 +68,15 @@ var c = {
         b:[[7,3]],
       },
       canMove:function(x1,y1,x2,y2){
-        return true;
+        if(chess.getPieceAt(x2,y2)){
+          if(chess.getPieceAt(x2,y2).team == this.team){
+            return false;
+          }
+        }
+
+        if(Math.abs(x1-x2) <= 1 && Math.abs(y1-y2) <= 1){
+          return true;
+        }
       }
     },
     queen:{
@@ -46,7 +89,17 @@ var c = {
         b:[[7,4]],
       },
       canMove:function(x1,y1,x2,y2){
-        return true;
+        if(chess.getPieceAt(x2,y2)){
+          if(chess.getPieceAt(x2,y2).team == this.team){
+            return false;
+          }
+        }
+
+        if((Math.abs(x1-x2) == 0 || Math.abs(y1-y2) == 0) || (Math.abs(x1-x2) > 0 && Math.abs(y1-y2) > 0 && Math.abs(x1-x2) == Math.abs(y1-y2))){
+          return chess.isClearPath(x1,y1,x2,y2);
+        } else {
+          return false;
+        }
       }
     },
     bishop:{
@@ -59,7 +112,17 @@ var c = {
         b:[[7,5],[7,2]],
       },
       canMove:function(x1,y1,x2,y2){
-        return true;
+        if(chess.getPieceAt(x2,y2)){
+          if(chess.getPieceAt(x2,y2).team == this.team){
+            return false;
+          }
+        }
+
+        if(Math.abs(x1-x2) > 0 && Math.abs(y1-y2) > 0 && Math.abs(x1-x2) == Math.abs(y1-y2)){
+          return chess.isClearPath(x1,y1,x2,y2);
+        } else {
+          return false;
+        }
       }
     },
     castle:{
@@ -72,7 +135,17 @@ var c = {
         b:[[7,7],[7,0]],
       },
       canMove:function(x1,y1,x2,y2){
-        return true;
+        if(chess.getPieceAt(x2,y2)){
+          if(chess.getPieceAt(x2,y2).team == this.team){
+            return false;
+          }
+        }
+
+        if(Math.abs(x1-x2) == 0 || Math.abs(y1-y2) == 0){
+          return chess.isClearPath(x1,y1,x2,y2);
+        } else {
+          return false;
+        }
       }
     },
     rook:{
@@ -85,7 +158,19 @@ var c = {
         b:[[7,6],[7,1]],
       },
       canMove:function(x1,y1,x2,y2){
-        return true;
+        if(chess.getPieceAt(x2,y2)){
+          if(chess.getPieceAt(x2,y2).team == this.team){
+            return false;
+          }
+        }
+
+        if(Math.abs(x1-x2) == 1 && Math.abs(y1-y2) == 2){
+          return true;
+        } else if(Math.abs(x1-x2) == 2 && Math.abs(y1-y2) == 1){
+          return true;
+        } else {
+          return false;
+        }
       }
     },
   }
