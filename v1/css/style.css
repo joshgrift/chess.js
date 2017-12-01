@@ -2,6 +2,8 @@
 body {
   font-family: Arial;
   background-color: #795548;
+  padding: 0px;
+  margin: 0px;
 }
 
 .chess {
@@ -9,6 +11,8 @@ body {
   margin: auto;
   position: relative;
   margin-top: 20px;
+  padding: 0px;
+  border: 0px;
 }
 
 .victory {
