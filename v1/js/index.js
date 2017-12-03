@@ -8,6 +8,7 @@ window.onload = function(){
   var hash = window.location.hash.substr(1);
   if(hash && chess){
     chess.import(sangwa.decode(hash));
+    window.location.hash = "";
   }
 }
 

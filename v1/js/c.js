@@ -6,6 +6,7 @@
 //Piece object
   //this.hasMoved() - returns whether the unit has moved
   //this.team - the team of the piece
+  //this.replace(object of piece, name of piece) - replace the piece with another piece
 
   //chess.victory(team) - passed team has won
   //chess.checkForPiece(x,y) - returns true if there is a piece there.
@@ -40,16 +41,28 @@ var c = {
 
         if(this.team == "w"){
           if((x2-x1==1 && Math.abs(y2-y1)==1 && chess.checkForPiece(x2,y2)) || (x2-x1==1 && y2-y1==0 && !chess.checkForPiece(x2,y2))){
+            if(x2 == 7){
+              this.replace(c.pieces.queen,"queen");
+            }
             return true;
           } else if(!this.hasMoved() && (x2-x1==2 && Math.abs(y2-y1)==0) && !chess.checkForPiece(x2,y2)){
+            if(x2 == 7){
+              this.replace(c.pieces.queen,"queen");
+            }
             return true;
           } else {
             return false;
           }
         } else {
           if((x2-x1==-1 && Math.abs(y2-y1)==1 && chess.checkForPiece(x2,y2)) || (x2-x1==-1 && y2-y1==0 && !chess.checkForPiece(x2,y2))){
+            if(x2 == 0){
+              this.replace(c.pieces.queen,"queen");
+            }
             return true;
           } else if(!this.hasMoved() && (Math.abs(x2-x1)==2 && Math.abs(y2-y1)==0) && !chess.checkForPiece(x2,y2)){
+            if(x2 == 0){
+              this.replace(c.pieces.queen,"queen");
+            }
             return true;
           } else {
             return false;

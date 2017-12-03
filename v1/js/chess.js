@@ -5,6 +5,7 @@ var Chess = function(element,c){
   this.pieces = [];
   this.board = [];
   this.teams = [];
+  this.turn = "w";
   this.c = c;
 
   //get the piece at a point
@@ -17,12 +18,11 @@ var Chess = function(element,c){
      return null;
   }
 
-  //pieces clas
+  //pieces class
   this.Piece = function(deets){
     this.id = deets.id;
     this.img = new Image();
     this.img.src = deets.src;
-    this.code = deets.code;
 
     this.x = deets.x;
     this.y = deets.y;
@@ -67,6 +67,13 @@ var Chess = function(element,c){
       }
 
       return found;
+    }
+
+    this.replace = function(newPiece,name){
+      this.id = name;
+      this.img.src = newPiece.display[this.team];
+      this.img.src = newPiece.display[this.team];
+      this.canMoveFunction = newPiece.canMove;
     }
   }
 
@@ -128,7 +135,10 @@ var Chess = function(element,c){
 
   //touchdown
   this.touchdown = function(x,y){
-    this.dragging = this.getPieceAt(Math.floor(x/c.t),Math.floor(y/c.t));
+    var piece = this.getPieceAt(Math.floor(x/c.t),Math.floor(y/c.t));
+    if(piece.team == this.turn){
+        this.dragging = piece;
+    }
   }
 
   //flyby
@@ -149,6 +159,14 @@ var Chess = function(element,c){
         if(currentPiece){
           currentPiece.dead = true;
         }
+
+        //now change team
+        if(this.turn == 'w'){
+          this.turn = 'b';
+        } else {
+          this.turn = 'w';
+        }
+
         this.dragging.move(Math.floor(x/c.t),Math.floor(y/c.t));
       } else {
         this.dragging.resetDraw();
@@ -158,9 +176,6 @@ var Chess = function(element,c){
       if(this.checkVictory()){
         this.victory(this.dragging.team);
       }
-
-      //now change team
-      //TODO CHANGE TEAM HERE
     }
 
     //reset dragging value
@@ -180,18 +195,20 @@ var Chess = function(element,c){
         pieces = pieces + this.pieces[i].team + this.pieces[i].x + this.pieces[i].y + this.pieces[i].id + "!";
       }
     }
-    return pieces;
+    return pieces + this.turn;
   }
 
   //import
   this.import = function(data){
     var d = data.split('!');
-
     this.pieces = [];
 
     for(i in d){
       if(d[i] != ""){
-        this.pieces.push(new this.Piece({
+        if(i == d.length - 1){
+          this.turn = d[i];
+        } else {
+           this.pieces.push(new this.Piece({
               id:d[i].substr(3),
               src:this.c.pieces[d[i].substr(3)].display[d[i].substr(0,1)],
               x:d[i].substr(1,1),
@@ -201,9 +218,13 @@ var Chess = function(element,c){
               canMove:this.c.pieces[d[i].substr(3)].canMove,
               start:this.c.pieces[d[i].substr(3)].start
             }));
+        }
+      } else {
+        if(i == d.length - 1){
+          this.turn = prompt('What team are you? Please enter "w" for White, or "b" for Black.');
+        }
       }
     }
-
   }
 
   this.checkVictory = function(){
