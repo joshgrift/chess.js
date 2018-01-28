@@ -1,2 +1,2 @@
 # chess.js
-MY OWN GAME OF CHESS
+HTML5 and Javascript chess game
