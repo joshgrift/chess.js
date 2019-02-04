@@ -22,7 +22,10 @@ function render(){
 
 function newGame(){
   var lastTouch = null;
-  chess = new Chess('.chess',c);
+  
+  chess = new Chess('.chess',c, function(){
+    setTimeout(share,100);
+  });
 
   $('.chess')[0].onmousemove = function(e){
     chess.flyby(e.clientX - this.offsetLeft,e.clientY - this.offsetTop);
@@ -79,5 +82,5 @@ function exportChess(){
 }
 
 function share(){
-  prompt('Link is below',window.location.origin + window.location.pathname + "#" + sangwa.encode(chess.export()));
+  prompt('Copy the link below and send it to the next player!',window.location.origin + window.location.pathname + "#" + sangwa.encode(chess.export()));
 }

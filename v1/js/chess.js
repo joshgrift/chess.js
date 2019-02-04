@@ -1,11 +1,12 @@
 /* code */
-var Chess = function(element,c){
+var Chess = function(element,c,onComplete){
   this.dragging = false;
   this.element = element;
   this.pieces = [];
   this.board = [];
   this.teams = [];
   this.turn = "w";
+  this.moveDisabled = false;
   this.c = c;
 
   //get the piece at a point
@@ -120,10 +121,14 @@ var Chess = function(element,c){
   //render function
   this.render = function(){
     ctx.clearRect(0,0,c.t*c.x,c.t*c.y);
+    ctx.fillStyle = "rgba(0,204,0,0.4)";
     /* draw our pieces */
     for(i in this.pieces){
       var piece = this.pieces[i];
       if(!piece.dead && this.dragging != piece){
+        if(piece.team == this.turn && !this.moveDisabled){
+          ctx.fillRect(piece.drawX,piece.drawY,c.t,c.t);
+        }
         ctx.drawImage(piece.img,piece.drawX,piece.drawY,c.t,c.t);
       }
     }
@@ -136,7 +141,7 @@ var Chess = function(element,c){
   //touchdown
   this.touchdown = function(x,y){
     var piece = this.getPieceAt(Math.floor(x/c.t),Math.floor(y/c.t));
-    if(piece.team == this.turn){
+    if(piece.team == this.turn && !this.moveDisabled){
         this.dragging = piece;
     }
   }
@@ -167,7 +172,15 @@ var Chess = function(element,c){
           this.turn = 'w';
         }
 
+        // disable the mvoe so thr player can't have fun with the apponent
+        this.moveDisabled = true;
+
         this.dragging.move(Math.floor(x/c.t),Math.floor(y/c.t));
+
+        // notify the controller that a turn has been completed successfully
+        if(onComplete){
+          onComplete();
+        }
       } else {
         this.dragging.resetDraw();
       }
