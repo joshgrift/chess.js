@@ -84,7 +84,6 @@ var c = {
         var destPiece = chess.getPieceAt(x2,y2);
         if(destPiece){
           if(destPiece.team == this.team){
-            console.log(destPiece.id);
             if (destPiece.id == 'rook' &&   !(chess.getPieceAt(x1,y1).hasMoved() || destPiece.hasMoved())){
               if ((y1< y2 && chess.isClearPath(x1,y1,x2,y2-1))||(y1> y2 && chess.isClearPath(x1,y1,x2,y2+1))) {
               return true;
