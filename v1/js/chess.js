@@ -161,21 +161,34 @@ var Chess = function(element,c,onComplete){
 
       //move character if it can move
       if(this.dragging.canMove(Math.floor(x/c.t),Math.floor(y/c.t))){
-        if(currentPiece){
-          currentPiece.dead = true;
-        }
-
         //now change team
         if(this.turn == 'w'){
           this.turn = 'b';
         } else {
           this.turn = 'w';
         }
-
         // disable the mvoe so thr player can't have fun with the apponent
         this.moveDisabled = true;
+        if (currentPiece &&this.dragging.team==currentPiece.team){
+          if (this.dragging.y < currentPiece.y){
+            this.dragging.move(Math.floor(x/c.t),Math.floor(y/c.t-2));
+            currentPiece.move(Math.floor(x/c.t),Math.floor(y/c.t-3));
+            
+          }
+          else {
+            
+            this.dragging.move(Math.floor(x/c.t),Math.floor(y/c.t+1));
+            currentPiece.move(Math.floor(x/c.t),Math.floor(y/c.t+2));
+          }
+        }
+        else {
+          this.dragging.move(Math.floor(x/c.t),Math.floor(y/c.t));
+          if(currentPiece ){
+            currentPiece.dead = true;
+        }
+        }
+        
 
-        this.dragging.move(Math.floor(x/c.t),Math.floor(y/c.t));
 
         // notify the controller that a turn has been completed successfully
         if(onComplete){
