@@ -173,7 +173,6 @@ var Chess = function(element,c,onComplete){
           if (this.dragging.y < currentPiece.y){
             this.dragging.move(Math.floor(x/c.t),Math.floor(y/c.t-2));
             currentPiece.move(Math.floor(x/c.t),Math.floor(y/c.t-3));
-            console.log("not this side");
             
           }
           else {
